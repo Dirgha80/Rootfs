@@ -30,11 +30,10 @@ jobs:
     name: Download Firmware
     runs-on: ubuntu-latest
     steps:
-      - name: Download Fw
-      - name: Download file ${{ github.event.inputs.type_file }}
-        run: |
-          if [ $(echo ${{ github.event.inputs.img_url }} | grep "drive.") ]; then
-          if [ $(echo ${{ github.event.inputs.img_url }} | awk -F "/" '{print $6}') ]; then
+       - name: Download file ${{ github.event.inputs.type_file }}
+         run: |
+           if [ $(echo ${{ github.event.inputs.img_url }} | grep "drive.") ]; then
+           if [ $(echo ${{ github.event.inputs.img_url }} | awk -F "/" '{print $6}') ]; then
             link_gdrive=$(echo ${{ github.event.inputs.img_url }} | awk -F "/" '{print $6}')
            else
             link_gdrive=$(echo ${{ github.event.inputs.img_url }} | awk -F "/" '{print $4}' | awk -F "?id=" '{print $2}'|awk -F "&export" '{print $1}')
