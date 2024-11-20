@@ -8,6 +8,22 @@ on:
       fw_link:
         description: 'Insert firmware link (Wget)'
         required: true
+      type_file:
+        description: "Select type file"
+        required: false
+        default: "img.gz"
+        type: choice
+        options:
+          - img.xz
+          - img.gz
+      img_url:
+        description: "Set the url img file"
+        required: true
+      rename_rootfs:
+        description: "ganti nama rootfs"
+        required: false
+        default: ""     
+        type: string   
 
 jobs:
   download:
@@ -15,8 +31,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Fw
+      - name: Download file ${{ github.event.inputs.type_file }}
         run: |
-          wget ${{ github.event.inputs.fw_link }} > /dev/null 2>&1
+           if [ $(echo ${{ github.event.inputs.img_url }} | grep "drive.") ]; then
+           if [ $(echo ${{ github.event.inputs.img_url }} | awk -F "/" '{print $6}') ]; then
+            link_gdrive=$(echo ${{ github.event.inputs.img_url }} | awk -F "/" '{print $6}')
+           else
+            link_gdrive=$(echo ${{ github.event.inputs.img_url }} | awk -F "/" '{print $4}' | awk -F "?id=" '{print $2}'|awk -F "&export" '{print $1}')
+           fi
+           sudo gdown ${link_gdrive} -O $FW_PATH
+           else
+           if [ $(echo ${{ github.event.inputs.img_url }} | grep "mediafire.com") ]; then
+            sudo mediafire-dl ${{ github.event.inputs.img_url }} -o $FW_PATH
+            else
+            if [ $(echo ${{ github.event.inputs.img_url }} | grep "mega.nz") ]; then
+              file_mega=$(sudo mega-get ${{ github.event.inputs.img_url }} | awk -F: '{print $2}')
+              sudo mv ${file_mega} $FW_PATH
+            else
+              sudo wget --no-check-certificate ${{ github.event.inputs.img_url }} -O $FW_PATH
+            fi
+           fi
+           fi
           FW_PATH=$(find ./ -name "*img.*")
           echo "FW_PATH=$FW_PATH" >> $GITHUB_ENV
 
