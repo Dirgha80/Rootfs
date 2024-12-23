@@ -6,3 +6,14 @@ chmod -R 755 /etc/profile.d/*
 chmod 755 /etc/mutiara-wrt
 chmod 755 /etc/profile
 chown -R root:root .
+# Step 1: Configure Password Login OpenWrt
+msg "Step 1: Configure Password Login OpenWrt"
+(echo "xidz"; sleep 1; echo "xidz") | passwd > /dev/null
+# Step 14:Default Theme #
+msg "Step 14: Set Tema"
+uci set luci.main.mediaurlbase='/luci-static/hj' && uci commit
+# Step 4: Remove login password required when accessing terminal
+msg "Step 4: Remove login password required when accessing terminal"
+uci set ttyd.@ttyd[0].command='/bin/bash --login' && uci commit
+
+
