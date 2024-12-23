@@ -67,6 +67,7 @@ jobs:
         perlbase-file kmod-brcmutil perlbase-essential perlbase-utf8 \
         perlbase-file  perlbase-time perlbase-xsloader coreutils-stat sudo \
         luci-app-ttyd luci-app-openclash luci-app-amlogic luci-app-diskman \
+        tailscale luci-app-tailscale  luci-app-droidnet luci-app-ipinfo luci-theme-initials luci-theme-hj \
         " FILES="files" || true
 
     - name: Find Rootfs
